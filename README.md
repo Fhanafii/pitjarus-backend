@@ -14,12 +14,15 @@ pitjarus-backend/
 │   ├── middleware/
 │   ├── modules/
 │   │    ├── auth/
-│   │    ├── users/
+│   │    ├── attendance/
 │   │    ├── stores/
 │   │    ├── products/
-│   │    └── reports/
+│   │    └── users/
 │   │
 │   ├── routes/
+│   ├── services/
+│   │    ├── password.service.ts
+│   │    └── jwt.service.ts
 │   ├── types/
 │   ├── utils/
 │   ├── app.ts
