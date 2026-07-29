@@ -36,6 +36,9 @@ COPY package*.json ./
 
 RUN npm ci --omit=dev
 
+COPY prisma ./prisma
+
+RUN npx prisma generate
 # ==============================
 # Runner
 # ==============================
