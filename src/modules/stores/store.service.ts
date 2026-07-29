@@ -6,6 +6,7 @@ import {
   UpdateStoreDto,
 } from "./store.types";
 import { StoreRepository } from "./store.repository";
+import { buildPaginationResult } from "../../common/pagination/pagination.helper";
 
 export class StoreService {
   private readonly storeRepository: StoreRepository;
@@ -47,17 +48,12 @@ export class StoreService {
             query.search
         );
 
-    return {
-        data: stores,
-
-        pagination: {
-            page,
-            limit,
-            total,
-            totalPages: Math.ceil(total / limit),
-
-        },
-    };
+    return buildPaginationResult(
+        stores,
+        page,
+        limit,
+        total
+    );
   }
 
   /**
