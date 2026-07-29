@@ -39,24 +39,20 @@ RUN npm ci --omit=dev
 COPY prisma ./prisma
 
 RUN npx prisma generate
+
 # ==============================
 # Runner
 # ==============================
-FROM base
+FROM base AS runner
 
 ENV NODE_ENV=production
 
 WORKDIR /app
 
 COPY --from=production-deps /app/node_modules ./node_modules
-
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
 
-COPY docker/scripts/entrypoint.sh ./entrypoint.sh
-
-RUN chmod +x ./entrypoint.sh
-
 EXPOSE 3000
 
-ENTRYPOINT ["./entrypoint.sh"]
+CMD ["node", "dist/server.js"]
