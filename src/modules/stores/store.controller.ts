@@ -1,0 +1,106 @@
+import { Request, Response } from "express";
+
+import { StoreService } from "./store.service";
+
+import {
+  createStoreSchema,
+  updateStoreSchema,
+  storeIdSchema,
+  storeQuerySchema,
+} from "./store.validation";
+
+import { successResponse } from "../../utils/response";
+
+export class StoreController {
+  private readonly storeService = new StoreService();
+
+  /**
+   * POST /stores
+   */
+  create = async (req: Request, res: Response) => {
+
+    const dto = createStoreSchema.parse(req.body);
+
+    const store = await this.storeService.create(dto);
+
+    return successResponse(
+      res,
+      store,
+      "Store berhasil dibuat",
+      201
+    );
+  };
+
+  /**
+   * GET /stores
+   */
+  findAll = async (req: Request, res: Response) => {
+
+    const query = storeQuerySchema.parse(req.query);
+
+    const result = await this.storeService.findAll(query);
+
+    return successResponse(
+      res,
+      result.data,
+      "Data store berhasil diambil",
+      200,
+      result.pagination
+    );
+  };
+
+  /**
+   * GET /stores/:id
+   */
+  findById = async (req: Request, res: Response) => {
+
+    const { id } = storeIdSchema.parse(req.params);
+
+    const store = await this.storeService.findById(id);
+
+    return successResponse(
+      res,
+      store,
+      "Detail store berhasil diambil"
+    );
+  };
+
+  /**
+   * PUT /stores/:id
+   */
+  update = async (req: Request, res: Response) => {
+
+    const { id } = storeIdSchema.parse(req.params);
+
+    const dto = updateStoreSchema.parse(req.body);
+
+    const store = await this.storeService.update(
+      id,
+      dto
+    );
+
+    return successResponse(
+      res,
+      store,
+      "Store berhasil diperbarui"
+    );
+  };
+
+  /**
+   * DELETE /stores/:id
+   */
+  delete = async (req: Request, res: Response) => {
+
+    const { id } = storeIdSchema.parse(req.params);
+
+    await this.storeService.delete(id);
+
+    return successResponse(
+      res,
+      null,
+      "Store berhasil dihapus"
+    );
+  };
+}
+
+export const storeController = new StoreController();
