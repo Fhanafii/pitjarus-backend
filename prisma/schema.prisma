@@ -1,0 +1,167 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AttendanceType {
+  CHECK_IN
+}
+
+model User {
+  id             Int                  @id @default(autoincrement())
+  username       String               @unique
+  passwordHash   String               @map("password_hash")
+  fullName       String               @map("full_name")
+
+  attendanceReports AttendanceReport[]
+  productReports    ProductReport[]
+  promoReports      PromoReport[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  isActive Boolean @default(true) @map("is_active")
+
+  @@map("users")
+}
+
+model Store {
+  id        Int    @id @default(autoincrement())
+  code      String @unique
+  name      String
+  address   String
+
+  latitude  Float?
+  longitude Float?
+
+  productReports ProductReport[]
+  promoReports   PromoReport[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  isActive Boolean @default(true) @map("is_active")
+
+  @@map("stores")
+}
+
+model Product {
+  id       Int    @id @default(autoincrement())
+  barcode  String @unique
+  name     String
+  size     String
+  sku String @unique
+  
+  reportItems ProductReportItem[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  isActive Boolean @default(true) @map("is_active")
+
+  @@map("products")
+}
+
+model AttendanceReport {
+  id Int @id @default(autoincrement())
+
+  clientReportId String @unique @map("client_report_id")
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  attendanceType AttendanceType @map("attendance_type")
+
+  latitude  Float
+  longitude Float
+  accuracy  Float?
+
+  photoPath String @map("photo_path")
+
+  reportedAt DateTime @map("reported_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("attendance_reports")
+}
+
+model ProductReport {
+  id Int @id @default(autoincrement())
+
+  clientReportId String @unique @map("client_report_id")
+
+  userId Int
+  user User @relation(fields: [userId], references: [id])
+
+  storeId Int
+  store Store @relation(fields: [storeId], references: [id])
+
+  reportedAt DateTime @map("reported_at")
+
+  items ProductReportItem[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("product_reports")
+}
+
+model ProductReportItem {
+
+  id Int @id @default(autoincrement())
+
+  reportId Int
+  report ProductReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  productId Int
+  product Product @relation(fields: [productId], references: [id])
+
+  available Boolean
+
+  @@map("product_report_items")
+}
+
+model PromoReport {
+
+  id Int @id @default(autoincrement())
+
+  clientReportId String @unique @map("client_report_id")
+
+  userId Int
+  user User @relation(fields: [userId], references: [id])
+
+  storeId Int
+  store Store @relation(fields: [storeId], references: [id])
+
+  reportedAt DateTime @map("reported_at")
+
+  items PromoReportItem[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("promo_reports")
+}
+
+model PromoReportItem {
+
+  id Int @id @default(autoincrement())
+
+  reportId Int
+  report PromoReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  productName String @map("product_name")
+
+  normalPrice Int @map("normal_price")
+
+  promoPrice Int @map("promo_price")
+
+  @@map("promo_report_items")
+}
