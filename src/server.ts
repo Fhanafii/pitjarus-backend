@@ -1,13 +1,14 @@
 import app from "./app";
 import { env } from "./config/env";
+import { logger } from "./config/logger";
 import { prisma } from "./config/prisma";
 
 const server = app.listen(env.port, () => {
-    console.log(`Server running on port ${env.port}`);
+    logger.info(`Server running on port ${env.port}`);
 });
 
 const shutdown = async () => {
-    console.log("Closing server...");
+    logger.info("Closing server...");
 
     await prisma.$disconnect();
 
