@@ -1,10 +1,11 @@
+version: "3.9"
+
 services:
   postgres:
-    image: postgres:16
+    image: postgres:16-alpine
+    container_name: pitjarus-postgres-dev
 
-    container_name: pitjarus-postgres
-
-    restart: always
+    restart: unless-stopped
 
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -15,7 +16,73 @@ services:
       - "${POSTGRES_PORT}:5432"
 
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_dev_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+    networks:
+      - pitjarus-dev
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: pitjarus-backend-dev
+
+    restart: unless-stopped
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    env_file:
+      - .env.dev
+
+    ports:
+      - "3001:3000"
+
+    volumes:
+    - .:/app
+    - /app/node_modules
+
+    command: npm run dev
+
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+    networks:
+      - pitjarus-dev
+
+  nginx:
+    image: nginx:1.28-alpine
+
+    container_name: pitjarus-nginx-dev
+
+    restart: unless-stopped
+
+    depends_on:
+      backend:
+        condition: service_started
+
+    ports:
+      - "8080:80"
+
+    volumes:
+      - ./docker/nginx/nginx.dev.conf:/etc/nginx/nginx.conf:ro
+
+    networks:
+      - pitjarus-dev
 
 volumes:
-  postgres_data:
+  postgres_dev_data:
+
+networks:
+  pitjarus-dev:
