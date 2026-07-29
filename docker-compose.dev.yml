@@ -47,10 +47,6 @@ services:
     ports:
       - "3001:3000"
 
-    volumes:
-    - .:/app
-    - /app/node_modules
-
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/health"]
       interval: 30s
