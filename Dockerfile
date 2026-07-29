@@ -28,6 +28,17 @@ RUN npx prisma generate
 RUN npm run build
 
 # ==============================
+# Development
+# ==============================
+FROM deps AS development
+
+COPY . .
+
+RUN npx prisma generate
+
+CMD ["npm", "run", "dev"]
+
+# ==============================
 # Production Dependencies
 # ==============================
 FROM base AS production-deps
