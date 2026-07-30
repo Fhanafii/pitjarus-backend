@@ -18,3 +18,11 @@ export const storeQuerySchema = z.object({
   limit: z.coerce.number().int().positive().optional(),
   search: z.string().optional(),
 });
+
+export const assignProductsSchema = z.object({
+  product_ids: z
+    .array(
+      z.coerce.number().int().positive()
+    )
+    .min(1),
+});

@@ -31,6 +31,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      target: development
 
     container_name: pitjarus-backend-dev
 
@@ -45,12 +46,6 @@ services:
 
     ports:
       - "3001:3000"
-
-    volumes:
-    - .:/app
-    - /app/node_modules
-
-    command: npm run dev
 
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/health"]

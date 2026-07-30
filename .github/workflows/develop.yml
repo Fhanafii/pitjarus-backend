@@ -1,62 +1,44 @@
-name: Development CI
+name: Development Auto Deploy
 
 on:
   push:
     branches:
-      - develop
+      - dev
 
-  pull_request:
-    branches:
-      - develop
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  ci:
-
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-
-      # ==========================
-      # Checkout Repository
-      # ==========================
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # ==========================
-      # Setup Node
-      # ==========================
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Connect Tailscale
+        uses: tailscale/github-action@v3
         with:
-          node-version: 22
-          cache: npm
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
 
-      # ==========================
-      # Install Dependency
-      # ==========================
-      - name: Install Dependencies
-        run: npm ci
+      - name: Deploy Development Server
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.DEV_SERVER_HOST }}
+          username: ${{ secrets.DEV_SERVER_USER }}
+          key: ${{ secrets.DEV_SSH_PRIVATE_KEY }}
 
-      # ==========================
-      # Prisma Generate
-      # ==========================
-      - name: Generate Prisma Client
-        run: npx prisma generate
+          script: |
+            cd /opt/pitjarus-backend
 
-      # ==========================
-      # TypeScript Build
-      # ==========================
-      - name: Build Project
-        run: npm run build
+            git fetch origin
 
-      # ==========================
-      # Docker Build Validation
-      # ==========================
-      - name: Build Docker Image
-        run: |
-          docker build \
-            -t pitjarus-backend:ci \
-            .
+            git reset --hard origin/dev
+
+            chmod +x docker/scripts/entrypoint.sh
+
+            ./docker/scripts/entrypoint.sh

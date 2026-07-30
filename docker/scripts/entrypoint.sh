@@ -2,14 +2,19 @@
 
 set -e
 
-echo "==================================="
-echo "Starting Pitjarus Backend..."
-echo "==================================="
+docker compose \
+  --env-file .env.dev \
+  -f docker-compose.dev.yml \
+  up -d --build
 
-echo "Running Prisma Migration..."
+docker compose \
+  --env-file .env.dev \
+  -f docker-compose.dev.yml \
+  exec backend \
+  npx prisma migrate deploy
 
-npx prisma migrate deploy
-
-echo "Starting Server..."
-
-exec node dist/server.js
+docker compose \
+  --env-file .env.dev \
+  -f docker-compose.dev.yml \
+  exec backend \
+  npx prisma db seed

@@ -14,13 +14,14 @@ datasource db {
 
 enum AttendanceType {
   CHECK_IN
+  CHECK_OUT
 }
 
 model User {
-  id             Int                  @id @default(autoincrement())
-  username       String               @unique
-  passwordHash   String               @map("password_hash")
-  fullName       String               @map("full_name")
+  id           Int    @id @default(autoincrement())
+  username     String @unique
+  passwordHash String @map("password_hash")
+  fullName     String @map("full_name")
 
   attendanceReports AttendanceReport[]
   productReports    ProductReport[]
@@ -28,44 +29,70 @@ model User {
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  isActive Boolean @default(true) @map("is_active")
+  isActive  Boolean  @default(true) @map("is_active")
 
   @@map("users")
 }
 
 model Store {
-  id        Int    @id @default(autoincrement())
-  code      String @unique
-  name      String
-  address   String
+  id      Int    @id @default(autoincrement())
+  code    String @unique
+  name    String
+  address String
 
   latitude  Float?
   longitude Float?
 
+  storeProducts  StoreProduct[]
   productReports ProductReport[]
   promoReports   PromoReport[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  isActive Boolean @default(true) @map("is_active")
+  isActive  Boolean  @default(true) @map("is_active")
 
   @@map("stores")
 }
 
 model Product {
-  id       Int    @id @default(autoincrement())
-  barcode  String @unique
-  name     String
-  size     String
-  sku String @unique
+  id      Int    @id @default(autoincrement())
+  barcode String @unique
+  name    String
+  size    String
+  sku     String @unique
+  price Int @default(0)
   
-  reportItems ProductReportItem[]
+  storeProducts StoreProduct[]
+  reportItems   ProductReportItem[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  isActive Boolean @default(true) @map("is_active")
+  isActive  Boolean  @default(true) @map("is_active")
 
   @@map("products")
+}
+
+model StoreProduct {
+  id Int @id @default(autoincrement())
+
+  storeId Int
+  store   Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  productId Int
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  available Boolean @default(false)
+
+  normalPrice Int? @map("normal_price")
+  promoPrice Int? @map("promo_price")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@unique([storeId, productId])
+  @@index([storeId])
+  @@index([productId])
+  @@map("store_products")
 }
 
 model AttendanceReport {
@@ -98,10 +125,10 @@ model ProductReport {
   clientReportId String @unique @map("client_report_id")
 
   userId Int
-  user User @relation(fields: [userId], references: [id])
+  user   User @relation(fields: [userId], references: [id])
 
   storeId Int
-  store Store @relation(fields: [storeId], references: [id])
+  store   Store @relation(fields: [storeId], references: [id])
 
   reportedAt DateTime @map("reported_at")
 
@@ -114,14 +141,13 @@ model ProductReport {
 }
 
 model ProductReportItem {
-
   id Int @id @default(autoincrement())
 
   reportId Int
-  report ProductReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  report   ProductReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
 
   productId Int
-  product Product @relation(fields: [productId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
 
   available Boolean
 
@@ -129,16 +155,15 @@ model ProductReportItem {
 }
 
 model PromoReport {
-
   id Int @id @default(autoincrement())
 
   clientReportId String @unique @map("client_report_id")
 
   userId Int
-  user User @relation(fields: [userId], references: [id])
+  user   User @relation(fields: [userId], references: [id])
 
   storeId Int
-  store Store @relation(fields: [storeId], references: [id])
+  store   Store @relation(fields: [storeId], references: [id])
 
   reportedAt DateTime @map("reported_at")
 
@@ -151,11 +176,10 @@ model PromoReport {
 }
 
 model PromoReportItem {
-
   id Int @id @default(autoincrement())
 
   reportId Int
-  report PromoReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  report   PromoReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
 
   productName String @map("product_name")
 

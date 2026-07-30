@@ -92,4 +92,45 @@ export class StoreRepository {
         }
     })
   }
+
+  /**
+   * GET /stores/:id/products
+   */
+  async findByStoreId(
+      storeId: number
+  ) {
+       return prisma.storeProduct.findMany({
+        where: {
+          storeId,
+        },
+        include: {
+          product: true,
+        },
+        orderBy: {
+            product: {
+              name: "asc",
+            },
+        },
+    });
+  }
+
+  async findDetail(id:number){
+    return prisma.store.findFirst({
+        where:{
+            id,
+            isActive:true,
+        },
+
+        include:{
+            storeProducts:{
+                include:{
+                    product:true,
+                },
+
+            },
+
+        },
+
+    });
+  }
 }
