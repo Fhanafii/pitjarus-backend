@@ -33,17 +33,12 @@ jobs:
           key: ${{ secrets.DEV_SSH_PRIVATE_KEY }}
 
           script: |
-            set -e
-
             cd /opt/pitjarus-backend
 
             git fetch origin
 
             git reset --hard origin/dev
 
-            docker compose \
-              --env-file .env.dev \
-              -f docker-compose.dev.yml \
-              up -d --build
+            chmod +x scripts/entrypoint.sh
 
-            sleep 10
+            ./scripts/entrypoint.sh
