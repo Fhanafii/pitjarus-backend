@@ -1,46 +1,26 @@
 import { PrismaClient } from "@prisma/client";
-
-import bcrypt from "bcrypt";
 import { logger } from "../src/config/logger";
+
+import { seedUsers } from "./seed/users.seed";
+import { seedStores } from "./seed/stores.seed";
+import { seedProducts } from "./seed/products.seed";
 
 const prisma = new PrismaClient();
 
 async function main() {
+  await seedUsers(prisma);
+  await seedStores(prisma);
+  // await seedProducts(prisma); // Masih error SKU field
 
-    const user =
-        await prisma.user.findUnique({
-            where: {
-                username: "fajar"
-            }
-        });
-
-    if (user) {
-        logger.info("User already exists");
-        return;
-    }
-
-    const passwordHash =
-        await bcrypt.hash("123456", 10);
-        
-    await prisma.user.create({
-        data: {
-            username: "fajar",
-            fullName: "Fajar",
-            passwordHash
-        }
-    });
-
-    logger.info("Seed success");
-
+  logger.info("Database seeded successfully");
 }
 
 main()
-.then(async()=>{
+  .then(async () => {
     await prisma.$disconnect();
-})
-.catch(async(e)=>{
-    logger.error(e);
+  })
+  .catch(async (error) => {
+    logger.error(error);
     await prisma.$disconnect();
     process.exit(1);
-
-});
+  });
