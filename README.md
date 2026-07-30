@@ -1,150 +1,334 @@
+![Node](https://img.shields.io/badge/Node.js-22-green)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
+![Express](https://img.shields.io/badge/Express-5-black)
+![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue)
+![Docker](https://img.shields.io/badge/Docker-Enabled-2496ED)
+![Swagger](https://img.shields.io/badge/OpenAPI-3.0-85EA2D)
+![License](https://img.shields.io/badge/License-MIT-yellow)
+
 # Pitjarus Backend
 
-## Overview
 Pitjarus Backend adalah API server Express yang disiapkan untuk aplikasi backend dengan lapisan konfigurasi, middleware, routing, dan modul bisnis terpisah. Dokumentasi ini dirancang untuk membantu pengembang memahami struktur proyek, menjalankan lingkungan lokal, dan menggunakan perintah penting.
 
-## Repository Structure
+Project ini merupakan implementasi backend yang mendukung proses:
+
+- Authentication (JWT)
+- Store Management
+- Product Management
+- Store Product Management
+- Attendance Report
+- Product Availability Report
+- Promo Report
+- Swagger API Documentation
+- Docker Deployment
+- CI/CD Ready
+
+---
+
+# Tech Stack
+
+- Node.js 22
+- Express.js
+- TypeScript
+- PostgreSQL
+- Prisma ORM
+- JWT Authentication
+- Zod Validation
+- Swagger (OpenAPI 3)
+- Docker
+- Docker Compose
+- GitHub Actions (Coming Soon)
+
+---
+
+# API Documentation
+
+Swagger Documentation dapat diakses melalui:
+
+### Development
+
+```
+http://localhost:3000/docs
+```
+
+### Production
+
+```
+https://dev-api.fhanafii.my.id
+```
+
+OpenAPI JSON
+
+```
+https://dev-api.fhanafii.my.id/openapi.json
+```
+
+---
+
+# Features
+
+## Authentication
+
+- Login
+- JWT Authentication
+- Password Hashing (bcrypt)
+
+## Store
+
+- Create Store
+- List Store
+- Detail Store
+- Update Store
+- Delete Store
+- Assign Product to Store
+- Remove Product from Store
+- Store Product List
+
+## Product
+
+- Create Product
+- List Product
+- Detail Product
+- Update Product
+- Delete Product
+
+## Attendance Report
+
+- Check In
+- Check Out
+- GPS
+- Timestamp
+- Selfie Photo
+
+## Product Report
+
+- Product Availability
+
+## Promo Report
+
+- Store Promotion
+- Update Store Price
+- Update Promo Price
+
+---
+
+# Repository Structure
+
 ```
 pitjarus-backend/
 
 ├── prisma/
+│   ├── migrations/
+│   └── schema.prisma
 │
 ├── src/
+│
+│   ├── common/
+│   │    ├── pagination/
+│   │    └── response/
+│   │
 │   ├── config/
+│   │    ├── env.ts
+│   │    └── prisma.ts
+│   │
+│   ├── docs/
+│   │    ├── swagger.ts
+│   │    └── swaggerOptions.ts
+│   │
+│   ├── exceptions/
+│   │
 │   ├── middleware/
+│   │
 │   ├── modules/
+│   │
 │   │    ├── auth/
-│   │    ├── attendance/
 │   │    ├── stores/
 │   │    ├── products/
-│   │    └── users/
+│   │    └── reports/
+│   │          ├── attendance/
+│   │          ├── product/
+│   │          └── promo/
 │   │
 │   ├── routes/
+│   │
 │   ├── services/
-│   │    ├── password.service.ts
-│   │    └── jwt.service.ts
-│   ├── types/
+│   │    ├── jwt.service.ts
+│   │    └── password.service.ts
+│   │
 │   ├── utils/
+│   │
 │   ├── app.ts
 │   └── server.ts
 │
 ├── uploads/
 │
-├── docker/
-│
-├── docs/
+├── Dockerfile
+├── docker-compose.yml
 │
 ├── package.json
-│
 └── README.md
 ```
 
-## Express Application Layer
-```
-src/
-│
-├── app.ts
-├── server.ts
-│
-├── config/
-│     prisma.ts
-│     env.ts
-│
-├── middleware/
-│     error.middleware.ts
-│     notFound.middleware.ts
-│
-├── routes/
-│     index.ts
-│
-├── modules/
-│
-│     auth/
-│
-│     attendance/
-│
-│     stores/
-│
-│     products/
-│
-│     reports/
-│
-├── utils/
-│
-└── types/
-```
+---
 
-## Prerequisites
-- Node.js 20+ atau versi terbaru yang kompatibel dengan dependensi
-- npm
-- Database yang mendukung konfigurasi Prisma (lihat `prisma/schema.prisma` untuk detail provider)
+# Database
 
-## Instalasi
-1. Clone repository:
-   ```bash
-   git clone https://github.com/Fhanafii/pitjarus-backend.git
-   cd pitjarus-backend
-   ```
-2. Install dependensi:
-   ```bash
-   npm install
-   ```
-3. Siapkan file lingkungan (`.env`) berdasarkan nilai di `src/config/env.ts`.
+Database menggunakan **PostgreSQL** dengan ORM **Prisma**.
 
-## Menjalankan Aplikasi
-- Jalankan mode development:
-  ```bash
-  npm run dev
-  ```
-- Build aplikasi:
-  ```bash
-  npm run build
-  ```
-- Jalankan hasil build:
-  ```bash
-  npm start
-  ```
+Model yang digunakan:
 
-## Skrip npm
-| Skrip | Deskripsi |
-|---|---|
-| `npm run dev` | Menjalankan server dengan `tsx watch` pada `src/server.ts` |
-| `npm run build` | Mengompilasi TypeScript ke folder `dist` |
-| `npm start` | Menjalankan `dist/server.js` setelah build |
-| `npm run typecheck` | Menjalankan pemeriksaan tipe TypeScript |
-| `npm run prisma:generate` | Menghasilkan Prisma Client |
-| `npm run prisma:migrate` | Menjalankan migrasi Prisma di environment development |
-| `npm run prisma:studio` | Menjalankan Prisma Studio |
+- User
+- Store
+- Product
+- StoreProduct
+- AttendanceReport
+- ProductReport
+- ProductReportItem
+- PromoReport
+- PromoReportItem
 
-## Prisma
-Folder `prisma/` berisi skema database dan migrasi.
+---
 
-- `schema.prisma` — definisi model dan provider database
-- `migrations/` — riwayat migrasi database
+# Installation
 
-### Perintah Prisma penting
+Clone repository
+
 ```bash
-npm run prisma:generate
-npm run prisma:migrate
-npm run prisma:studio
+git clone https://github.com/Fhanafii/pitjarus-backend.git
 ```
 
-## Arsitektur Utama
-- `src/app.ts` — inisialisasi aplikasi Express, middleware, dan route
-- `src/server.ts` — entry point yang memulai server
-- `src/config/env.ts` — konfigurasi environment
-- `src/config/prisma.ts` — konfigurasi dan client Prisma
-- `src/middleware/` — middleware global seperti error handler dan not found handler
-- `src/routes/index.ts` — titik penggabungan route utama
-- `src/modules/` — modul fungsional untuk fitur seperti auth, users, stores, products, reports
-- `src/utils/` — utilitas umum untuk aplikasi
-- `src/types/` — tipe custom dan definisi TypeScript
+Masuk ke project
 
-## Tips Pengembangan
+```bash
+cd pitjarus-backend
+```
+
+Install dependency
+
+```bash
+npm install
+```
+
+Generate Prisma Client
+
+```bash
+npx prisma generate
+```
+
+Migration Database
+
+```bash
+npx prisma migrate dev
+```
+
+Jalankan server
+
+```bash
+npm run dev
+```
+
+---
+
+# Environment
+
+Contoh file `.env`
+
+```env
+PORT=3000
+
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/pitjarus_db?schema=public"
+
+JWT_SECRET=supersecretkey
+
+JWT_EXPIRES_IN=24h
+
+API_BASE_URL=http://localhost:3000
+```
+
+---
+
+# Docker
+
+Build
+
+```bash
+docker compose build
+```
+
+Run
+
+```bash
+docker compose up -d
+```
+
+Stop
+
+```bash
+docker compose down
+```
+
+---
+
+# Available Scripts
+
+| Command | Description |
+|----------|-------------|
+| npm run dev | Development Mode |
+| npm run build | Compile TypeScript |
+| npm start | Production Mode |
+| npm run typecheck | TypeScript Checking |
+| npm run prisma:generate | Generate Prisma Client |
+| npm run prisma:migrate | Run Migration |
+| npm run prisma:studio | Open Prisma Studio |
+
+---
+
+# API Modules
+
+| Module | Endpoint |
+|---------|----------|
+| Authentication | `/v1/login` |
+| Stores | `/v1/stores` |
+| Products | `/v1/products` |
+| Store Products | `/v1/stores/:id/products` |
+| Attendance | `/v1/report/attendance` |
+| Product Report | `/v1/report/product` |
+| Promo Report | `/v1/report/promo` |
+
+---
+
+# Security
+
+- JWT Authentication
+- Password Hashing (bcrypt)
+- Helmet
+- CORS
+- Compression
+- Zod Validation
+- Centralized Error Handler
+
+---
+
+# Tips Pengembangan
 - Pastikan variabel environment terisi dengan benar sebelum menjalankan server.
 - Jalankan `npm run typecheck` untuk memeriksa kesalahan tipe sebelum build.
 - Gunakan `prisma studio` untuk melihat dan memverifikasi data database dengan cepat.
 
-## Catatan
+# Catatan
 - Struktur proyek dipertahankan sesuai implementasi Express Application layer.
 - Dokumentasi ini ditujukan agar lebih mudah dibaca di GitHub dan memudahkan developer baru memahami alur.
+
+# Author
+
+**Fahmi Hanafi**
+
+GitHub
+
+https://github.com/Fhanafii
+
+Portfolio
+
+https://fhanafii.my.id
+
+---
