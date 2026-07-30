@@ -60,7 +60,8 @@ model Product {
   name    String
   size    String
   sku     String @unique
-
+  price Int @default(0)
+  
   storeProducts StoreProduct[]
   reportItems   ProductReportItem[]
 
@@ -79,8 +80,14 @@ model StoreProduct {
 
   productId Int
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  available Boolean @default(false)
+
+  normalPrice Int? @map("normal_price")
+  promoPrice Int? @map("promo_price")
 
   createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   @@unique([storeId, productId])
   @@index([storeId])
