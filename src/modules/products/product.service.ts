@@ -35,6 +35,7 @@ export class ProductService {
       name: dto.name,
       size: dto.size,
       sku: dto.sku,
+      price: dto.price,
     });
   }
 
@@ -105,6 +106,7 @@ export class ProductService {
       name: dto.name,
       size: dto.size,
       sku: dto.sku,
+      price: dto.price,
     });
   }
 

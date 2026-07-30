@@ -100,4 +100,34 @@ export class ProductRepository {
         },
     });
  }
+
+ async findManyByIds(ids: number[]) {
+    return prisma.product.findMany({
+
+      where:{
+        id:{
+          in: ids,
+        },
+        isActive:true,
+      },
+    });
+  }
+
+  /**
+   * Cari product berdasarkan nama
+   */
+  async findByName(name: string) {
+
+    return prisma.product.findFirst({
+
+      where: {
+        name: {
+          equals: name,
+          mode: Prisma.QueryMode.insensitive,
+        },
+        isActive: true,
+      },
+    });
+  }
+  
 }

@@ -5,6 +5,7 @@ export interface CreateProductDto {
   name: string;
   size: string;
   sku: string;
+  price: number;
 }
 
 export interface UpdateProductDto {
@@ -12,6 +13,7 @@ export interface UpdateProductDto {
   name: string;
   size: string;
   sku: string;
+  price: number;
 }
 
 export interface ProductQuery extends PaginationQuery {}
