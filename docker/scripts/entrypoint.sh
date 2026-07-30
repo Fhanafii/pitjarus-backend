@@ -18,5 +18,3 @@ docker compose \
   -f docker-compose.dev.yml \
   exec backend \
   npx prisma db seed
-
-curl --fail http://localhost:3001/v1/health
