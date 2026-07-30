@@ -101,6 +101,27 @@ export class StoreController {
       "Store berhasil dihapus"
     );
   };
+
+  /**
+   * GET /stores/:id/products
+   */
+  getProducts = async (
+    req: Request,
+    res: Response
+  ) => {
+
+      const id =
+          Number(req.params.id);
+
+      const products =
+          await this.storeService.getProducts(id);
+
+      return successResponse(
+          res,
+          products,
+          "Produk berhasil diambil"
+      );
+  };
 }
 
 export const storeController = new StoreController();

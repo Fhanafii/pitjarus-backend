@@ -26,6 +26,17 @@ router.get(
 );
 
 /**
+  * GET /stores/:id/products
+  */
+router.get(
+    "/:id/products",
+    authenticate,
+    asyncHandler(
+        storeController.getProducts
+    )
+);
+
+/**
  * GET /v1/stores/:id
  */
 router.get(

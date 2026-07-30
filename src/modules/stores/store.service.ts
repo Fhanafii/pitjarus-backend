@@ -111,4 +111,23 @@ export class StoreService {
 
     await this.storeRepository.delete(id);
   }
+
+  /**
+   * GET /stores/:id/products
+   */
+  async getProducts(storeId: number) {
+    const store =
+        await this.storeRepository.findById(storeId);
+
+    if (!store) {
+        throw new AppError(
+            "Store tidak ditemukan",
+            404
+        );
+    }
+
+    return this.storeRepository.findByStoreId(
+        storeId
+    );
+  }
 }
