@@ -37,6 +37,28 @@ router.get(
 );
 
 /**
+  * POST /:id/products
+  */
+router.post(
+  "/:id/products",
+  authenticate,
+  asyncHandler(
+    storeController.assignProducts
+  )
+);
+
+/**
+  * DELETE /:storeId/products/:productId
+  */
+router.delete(
+  "/:storeId/products/:productId",
+  authenticate,
+  asyncHandler(
+    storeController.removeProduct
+  )
+);
+
+/**
  * GET /v1/stores/:id
  */
 router.get(

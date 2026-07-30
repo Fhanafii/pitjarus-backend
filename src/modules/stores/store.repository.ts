@@ -93,22 +93,25 @@ export class StoreRepository {
     })
   }
 
+  /**
+   * GET /stores/:id/products
+   */
   async findByStoreId(
       storeId: number
   ) {
-      return prisma.product.findMany({
-          where:{
-              isActive:true,
-              storeProducts:{
-                  some:{
-                    storeId,
-                  },
-              },
-          },
-          orderBy:{
-              name:"asc",
-          },
-      });
+       return prisma.storeProduct.findMany({
+        where: {
+          storeId,
+        },
+        include: {
+          product: true,
+        },
+        orderBy: {
+            product: {
+              name: "asc",
+            },
+        },
+    });
   }
 
   async findDetail(id:number){

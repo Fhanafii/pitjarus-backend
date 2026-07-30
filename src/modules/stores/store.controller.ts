@@ -7,6 +7,7 @@ import {
   updateStoreSchema,
   storeIdSchema,
   storeQuerySchema,
+  assignProductsSchema
 } from "./store.validation";
 
 import { successResponse } from "../../utils/response";
@@ -29,6 +30,65 @@ export class StoreController {
       "Store berhasil dibuat",
       201
     );
+  };
+
+  /**
+   * POST /stores/:id/products
+   */
+  assignProducts = async (
+    req: Request,
+    res: Response
+  ) => {
+
+    const { id } =
+      storeIdSchema.parse(req.params);
+
+    const dto =
+      assignProductsSchema.parse(req.body);
+
+    await this.storeService.assignProducts(
+      id,
+      dto.product_ids
+    );
+
+    return successResponse(
+      res,
+      null,
+      "Produk berhasil ditambahkan ke toko"
+
+    );
+
+  };
+
+  /**
+   * DELETE /stores/:storeId/products/:productId
+   */
+  removeProduct = async (
+    req: Request,
+    res: Response
+  ) => {
+
+    const storeId =
+      Number(req.params.storeId);
+
+    const productId =
+      Number(req.params.productId);
+
+    await this.storeService.removeProduct(
+      storeId,
+      productId
+    );
+
+    return successResponse(
+
+      res,
+
+      null,
+
+      "Produk berhasil dihapus dari toko"
+
+    );
+
   };
 
   /**
