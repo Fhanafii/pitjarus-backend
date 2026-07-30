@@ -39,6 +39,6 @@ jobs:
 
             git reset --hard origin/dev
 
-            chmod +x scripts/entrypoint.sh
+            chmod +x docker/scripts/entrypoint.sh
 
-            ./scripts/entrypoint.sh
+            .docker/scripts/entrypoint.sh
