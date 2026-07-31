@@ -62,13 +62,31 @@ export class UploadService {
     base64: string
   ): Buffer {
 
-    let payload = base64;
-
-    if (payload.includes(",")) {
-      payload = payload.split(",")[1];
+     if (!base64) {
+        throw new AppError(
+            "Base64 kosong",
+            400
+        );
     }
 
-    return Buffer.from(payload, "base64");
+    const payload = base64.replace(
+        /^data:image\/[a-zA-Z]+;base64,/,
+        ""
+    );
+
+    const buffer = Buffer.from(
+        payload,
+        "base64"
+    );
+
+    if (buffer.length === 0) {
+        throw new AppError(
+            "Base64 tidak valid",
+            400
+        );
+    }
+
+    return buffer;
   }
 
   /**

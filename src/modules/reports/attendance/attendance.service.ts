@@ -56,19 +56,12 @@ export class AttendanceService {
 
     const attendance =
       await attendanceRepository.create({
-
         clientReportId: dto.client_report_id,
-
         attendanceType,
-
         latitude: dto.location.latitude,
-
         longitude: dto.location.longitude,
-
         accuracy: dto.location.accuracy,
-
         photoPath,
-
         reportedAt: new Date(dto.timestamp),
 
         user: {
