@@ -1,24 +1,16 @@
 import { prisma } from "../../../config/prisma";
-
 import { AppError } from "../../../exceptions/AppError";
-
 import { ProductReportRepository } from "./productReport.repository";
-
 import { StoreRepository } from "../../stores/store.repository";
 import { ProductRepository } from "../../products/product.repository";
-
+import { StoreProductRepository } from "../../stores/storeProduct.repository";
 import { CreateProductReportDto } from "./productReport.types";
 
 export class ProductReportService {
-
-  private readonly productReportRepository =
-    new ProductReportRepository();
-
-  private readonly storeRepository =
-    new StoreRepository();
-
-  private readonly productRepository =
-    new ProductRepository();
+  private readonly productReportRepository = new ProductReportRepository();
+  private readonly storeRepository = new StoreRepository();
+  private readonly productRepository = new ProductRepository();
+  private readonly storeProductRepository = new StoreProductRepository();
 
   /**
    * Create Product Report
@@ -37,7 +29,6 @@ export class ProductReportService {
       );
 
     if (existingReport) {
-
       throw new AppError(
         "Report sudah pernah dikirim",
         409
@@ -95,7 +86,6 @@ export class ProductReportService {
      * Transaction
      */
     return prisma.$transaction(async (tx) => {
-
       /**
        * Header
        */
@@ -130,23 +120,23 @@ export class ProductReportService {
        */
       await this.productReportRepository.createItems(
         tx,
-
         dto.products.map(product => ({
           reportId: report.id,
           productId: product.product_id,
           available: product.available,
-
         }))
-
       );
-
+      // Update current availability pada store_products
+      for (const product of dto.products) {
+        await this.storeProductRepository.updateAvailability(
+          dto.store_id,
+          product.product_id,
+          product.available
+        );
+      }
       return report;
-
     });
-
   }
-
 }
 
-export const productReportService =
-  new ProductReportService();
+export const productReportService = new ProductReportService();

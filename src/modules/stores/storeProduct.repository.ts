@@ -116,4 +116,21 @@ export class StoreProductRepository {
 
     return result;
   }
+
+  // Update Availability Product pada suatu store
+  async updateAvailability(
+    storeId: number,
+    productId: number,
+    available: boolean
+  ) {
+    return prisma.storeProduct.updateMany({
+      where: {
+        storeId,
+        productId,
+      },
+      data: {
+        available,
+      },
+    });
+  }
 }
