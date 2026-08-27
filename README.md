@@ -7,9 +7,9 @@
 ![Swagger](https://img.shields.io/badge/OpenAPI-3.0-85EA2D)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
-# Pitjarus Backend
+# MerchGo Backend
 
-Pitjarus Backend adalah API server Express yang disiapkan untuk aplikasi backend dengan lapisan konfigurasi, middleware, routing, dan modul bisnis terpisah. Dokumentasi ini dirancang untuk membantu pengembang memahami struktur proyek, menjalankan lingkungan lokal, dan menggunakan perintah penting.
+MerchGo Backend adalah API server Express yang disiapkan untuk aplikasi backend dengan lapisan konfigurasi, middleware, routing, dan modul bisnis terpisah. Dokumentasi ini dirancang untuk membantu pengembang memahami struktur proyek, menjalankan lingkungan lokal, dan menggunakan perintah penting.
 
 Project ini merupakan implementasi backend yang mendukung proses:
 
